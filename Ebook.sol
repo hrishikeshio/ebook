@@ -1,5 +1,6 @@
 contract Ebook{
  	address contractOwner = msg.sender;
+ 	bool public _success = true;
     struct bookOwner{
         address addr;
     }
@@ -9,10 +10,10 @@ contract Ebook{
 	{
 	}
     modifier noether { if (msg.value > 0) throw; _ }
-	function register (string ISBN, string seriall) noether
+
+	function register (bytes32 identity) noether public returns (bool _success)
 	{
-		var identity=sha3(ISBN, seriall);
-    	
+		
 		if(ownership[identity].addr!=0)
 		{
 		    throw;
@@ -20,7 +21,7 @@ contract Ebook{
 		ownership[identity]=bookOwner(msg.sender);	
 	}
 	
-	function transfer(bytes32 identity,address reciever) noether
+	function transfer(bytes32 identity,address reciever) noether public returns (bool _success)
 	{   
 	    if(ownership[identity].addr!=msg.sender)
 	    {
@@ -29,7 +30,7 @@ contract Ebook{
 	    ownership[identity]=bookOwner(reciever);
 	}
 
-	function checkOwnership(bytes32 identity) noether returns (address owner) 
+	function checkOwnership(bytes32 identity) constant returns (address) 
 	{
 		return ownership[identity].addr;
 	}
